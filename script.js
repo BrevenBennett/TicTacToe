@@ -6,6 +6,7 @@ let currentPlayer = "X";
 let gameOver = false;
 let board = new Array(9);
 
+// Could use a for loop here but this is cleaner
 allSquares.forEach((square, i) => {
   // same thing as adding onclick to all of the buttons in the html
   square.addEventListener("click", () => {
@@ -13,25 +14,32 @@ allSquares.forEach((square, i) => {
     if (square.innerHTML || gameOver) {
       return;
     }
+    
+    // change the square to an X or an O
     square.innerHTML = currentPlayer;
+    // add the symbol onto the board array
     board[i] = currentPlayer;
 
+    // if someone won, change the title to the winner and set gameover to true
     if (checkWin()) {
       title.innerHTML = `${currentPlayer} Won The Game!`;
       return (gameOver = true);
     }
 
+    // if there's a tie, change title and set gameover to true
     if (checkTie()) {
       title.innerHTML = "It's A Draw!";
       return (gameOver = true);
     }
 
+    // X --> O or O --> X
     switchPlayers();
     title.innerHTML = `${currentPlayer}'s Turn`;
   });
 });
 
 function switchPlayers() {
+  // ternary operator sets the current player to the opposite of what it is
   currentPlayer = currentPlayer === "X" ? "O" : "X";
 }
 
@@ -64,14 +72,17 @@ function checkWin() {
   for (i = 0; i < winningIndices.length; ++i) {
     const matchingIndices = winningIndices[i];
 
-    let symbol1 = board[matchingIndices[0]];
-    let symbol2 = board[matchingIndices[1]];
-    let symbol3 = board[matchingIndices[2]];
+    // Mapping the board at the indices in each array above to the symbol
+    let symbol1 = board[matchingIndices[0]]; // checks these indices 0, 3, 6, 0, 1, 2, 0, 2
+    let symbol2 = board[matchingIndices[1]]; // checks these indices 1, 4, 7, 3, 4, 5, 4, 4
+    let symbol3 = board[matchingIndices[2]]; // checks these indices 2, 5, 8, 6, 7, 8, 8, 6
+
     // if any of the symbols are empty, move on to the next iteration of the for loop. Prevents a false win from occuring
     if (!symbol1 || !symbol2 || !symbol3) {
       continue;
     }
 
+    // If all the symbols match at the right indices, then it's a win
     if (symbol1 === symbol2 && symbol2 == symbol3) {
       return true;
     }
